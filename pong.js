@@ -1,7 +1,7 @@
 //variaveis da bolinha
 let xBolinha = 300;
 let yBolinha = 200;
-let diametro = 15;
+let diametro = 13;
 let raio = diametro / 2;
 
 let velocidadeXBolinha = 2;
@@ -23,6 +23,10 @@ let velocidadeYOponente;
 
 let colidiu = false;
 
+//placar do jogo
+let meusPontos = 0;
+let pontosDoOponente = 0;
+
 
 function setup() {
   createCanvas(600, 400);
@@ -40,20 +44,24 @@ function draw() {
   mostraRaqueteOponente(xRaqueteOponente,yRaqueteOponente);
   movimentaRaqueteOponente();
   VerificaColisaoRaquete(xRaqueteOponente, yRaqueteOponente);
+  incluirPlacar();
+  marcaPonto();
 
 }
 
+//Mostrando a bolinha
 function mostraBolinha(){
   circle(xBolinha,yBolinha, diametro);
 }
 
+//Movimentação da bolinha
 function movimentaBolinha(){
   xBolinha += velocidadeXBolinha;
   yBolinha += velocidadeYBolinha;
 }
 
+//se estiver tocando a borda
 function tocandoBorda(){
-    //se estiver tocando a borda
   if(xBolinha + raio > width || xBolinha - raio < 0){
     velocidadeXBolinha *= -1;
   }
@@ -70,6 +78,7 @@ function mostraRaqueteOponente(x,y){
   rect(x,y,raqueteComprimento,raqueteAltura);
 }
 
+//Movimentação da raquete
 function movimentaRaquete(){
   if(keyIsDown(UP_ARROW)){
     yRaquete -= 10;
@@ -79,6 +88,7 @@ function movimentaRaquete(){
   }
 }
 
+//Verificação de colisão com as raquetes
 function verificaColisaoRaquete(){
   if(xBolinha - raio < xRaquete + raqueteComprimento && yBolinha - raio < yRaquete + raqueteAltura && yBolinha + raio > yRaquete){
     velocidadeXBolinha *= -1;
@@ -98,6 +108,32 @@ function VerificaColisaoRaquete(x,y){
 function movimentaRaqueteOponente(){
   velocidadeYOponente = yBolinha - yRaqueteOponente - raqueteComprimento / 2 - 30;
   yRaqueteOponente += velocidadeYOponente;
+}
+
+
+//Placar de pontuação
+
+function incluirPlacar(){
+  stroke(255);
+  textAlign(CENTER);
+  textSize(16);
+  fill(color(255, 140, 0));
+  rect(150, 10, 40, 20);
+  fill(255);
+  text(meusPontos, 170, 26);
+  fill(color(255, 140, 0));
+  rect(450, 10, 40, 20);
+  fill(255);
+  text(pontosDoOponente, 470, 26);
+}
+
+function marcaPonto(){
+  if (xBolinha > 590){
+    meusPontos += 1;
+  }
+  if (xBolinha < 10){
+    pontosDoOponente += 1;
+  }
 }
 
 
