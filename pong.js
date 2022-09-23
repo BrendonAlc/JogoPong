@@ -4,8 +4,11 @@ let yBolinha = 200;
 let diametro = 13;
 let raio = diametro / 2;
 
-let velocidadeXBolinha = 2;
-let velocidadeYBolinha = 2;
+let velocidadeXBolinha = 5;
+let velocidadeYBolinha = 5;
+
+//chance de errar
+let chanceDeErrar = 0;
 
 //variaveis da raquete
 let xRaquete = 5; 
@@ -30,6 +33,7 @@ let pontosDoOponente = 0;
 
 function setup() {
   createCanvas(600, 400);
+  trilha.loop();
 }
 
 function draw() {
@@ -92,6 +96,7 @@ function movimentaRaquete(){
 function verificaColisaoRaquete(){
   if(xBolinha - raio < xRaquete + raqueteComprimento && yBolinha - raio < yRaquete + raqueteAltura && yBolinha + raio > yRaquete){
     velocidadeXBolinha *= -1;
+    raquetada.play();//Para realizar som quando houver a raquetada
   }
 }
 
@@ -99,17 +104,28 @@ function VerificaColisaoRaquete(x,y){
   colidiu = collideRectCircle(x,y,raqueteComprimento,raqueteAltura,xBolinha,yBolinha,raio);
   if(colidiu){
     velocidadeXBolinha *= -1;
+    raquetada.play();
   }
 }
 
 
-//Raquete do Oponente
+//Função para Raquete do Oponente automático
 
 function movimentaRaqueteOponente(){
   velocidadeYOponente = yBolinha - yRaqueteOponente - raqueteComprimento / 2 - 30;
-  yRaqueteOponente += velocidadeYOponente;
+  yRaqueteOponente += velocidadeYOponente + chanceDeErrar;
+  calculaChanceDeErrar();
 }
 
+/*Função para movimentar a raquete"Oponente"(lado Direito)
+function movimentaRaqueteOponente(){
+  if(keyIsDown(87)){
+    yRaqueteOponente -= 10;
+  }
+  if(keyIsDown(83)){
+    yRaqueteOponente += 10;
+  }
+}*/
 
 //Placar de pontuação
 
@@ -130,9 +146,36 @@ function incluirPlacar(){
 function marcaPonto(){
   if (xBolinha > 590){
     meusPontos += 1;
+    ponto.play();
   }
   if (xBolinha < 10){
     pontosDoOponente += 1;
+    ponto.play();
+  }
+}
+
+
+//Sons
+
+function preload() {
+  trilha = loadSound("./Pong - Sons/trilha.mp3");
+  ponto = loadSound("./Pong - Sons/ponto.mp3");
+  raquetada = loadSound("../Pong - Sons/raquetada.mp3");
+}
+
+//Verificando pontuação para aumentar a chance de errar
+
+function calculaChanceDeErrar() {
+  if (pontosDoOponente >= meusPontos) {
+    chanceDeErrar += 1
+    if (chanceDeErrar >= 39){
+      chanceDeErrar = 40
+    }
+  } else {
+    chanceDeErrar -= 1
+    if(chanceDeErrar <= 35){
+      chanceDeErrar = 35
+    }
   }
 }
 
